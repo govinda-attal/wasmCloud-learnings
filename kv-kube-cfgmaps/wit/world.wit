@@ -1,0 +1,6 @@
+package cloud-platform:kv-kube-cfgmaps;
+
+world server {
+    export wrpc:keyvalue/store@0.2.0-draft;
+}
+

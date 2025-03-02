@@ -1,0 +1,19 @@
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: kube-cfgmaps-provider-golang
+  annotations:
+    version: v0.0.1
+    description: 'A kube-cfgmaps provider written in Golang'
+    wasmcloud.dev/authors: cloud-platform team
+spec:
+  components:
+    - name: kube-cfgmaps
+      type: capability
+      properties:
+        image: file://./build/kube-cfgmaps.par.gz
+        id: kube-cfgmaps
+        config:
+          - name: provider-config
+            properties:
+              team: cloud-platform

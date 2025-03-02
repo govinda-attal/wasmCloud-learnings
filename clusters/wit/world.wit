@@ -1,0 +1,18 @@
+package cloud-platform:clusters;
+
+interface cluster-api {
+  
+  record data {
+    tier: string,
+    provider: string,
+    region: string,
+    cluster: string,
+  }
+
+  get: func(tier: string, cluster: string) -> data;
+}
+
+world clusters {
+  export cluster-api;
+  import wrpc:keyvalue/store@0.2.0-draft;
+}

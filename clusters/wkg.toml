@@ -1,0 +1,2 @@
+[overrides]
+"wrpc:keyvalue" = { path = "../kv-kube-cfgmaps/wit/deps/keyvalue" }
