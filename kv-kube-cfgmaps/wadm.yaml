@@ -1,7 +1,7 @@
 apiVersion: core.oam.dev/v1beta1
 kind: Application
 metadata:
-  name: kube-cfgmaps-provider-golang
+  name: kube-cfgmaps-provider
   annotations:
     version: v0.0.1
     description: 'A kube-cfgmaps provider written in Golang'
@@ -11,7 +11,7 @@ spec:
     - name: kube-cfgmaps
       type: capability
       properties:
-        image: file://./build/kube-cfgmaps.par.gz
+        image: localhost:5000/kube-cfgmaps:v0.0.1
         id: kube-cfgmaps
         config:
           - name: provider-config

@@ -22,8 +22,9 @@ func main() {
 func run() error {
 	cmSrv, err := cfgmap.NewService()
 	if err != nil {
-		return err
+		panic(err)
 	}
+	log.Println("registered cfgmap service")
 	// Initialize the provider with callbacks to track linked components
 	prv := Provider{
 		cmSrv: cmSrv,
@@ -33,7 +34,7 @@ func run() error {
 		provider.Shutdown(prv.handleShutdown),
 	)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	prv.WasmcloudProvider = wcPrv
@@ -41,10 +42,12 @@ func run() error {
 	providerCh := make(chan error, 1)
 	signalCh := make(chan os.Signal, 1)
 
+	log.Println("Starting provider server")
+
 	stopFunc, err := server.Serve(prv.RPCClient, &prv)
 	if err != nil {
 		wcPrv.Shutdown()
-		return err
+		panic(err)
 	}
 
 	go func() {
@@ -57,7 +60,7 @@ func run() error {
 	select {
 	case err = <-providerCh:
 		stopFunc()
-		return err
+		panic(err)
 	case <-signalCh:
 		wcPrv.Shutdown()
 		stopFunc()

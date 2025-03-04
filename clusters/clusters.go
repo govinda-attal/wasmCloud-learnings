@@ -3,15 +3,37 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+
+	"go.bytecodealliance.org/cm"
+	_ "go.bytecodealliance.org/x/cabi"
+
 	clusterapi "github.com/govinda-attal/wasmCloud-learnings/clusters/gen/cloud-platform/clusters/cluster-api"
+	"github.com/govinda-attal/wasmCloud-learnings/clusters/gen/wrpc/keyvalue/store"
 )
 
 func init() {
-	clusterapi.Exports.Get = Get
+	clusterapi.Exports.GetClusterInfo = GetClusterInfo
 }
 
-func Get(tier string, cluster string) *clusterapi.Data {
-	return nil
+func GetClusterInfo() getClusterInfoResult {
+	tier := "dev"
+	cluster := "cluster1"
+	bucket := fmt.Sprintf("default/%s-clusters", tier)
+	rs := store.Get(bucket, cluster)
+	if rs.IsErr() {
+		return cm.Err[getClusterInfoResult](clusterapi.ErrorOther(rs.Err().String()))
+	}
+	rawData := rs.OK().Some().Slice()
+	var data clusterapi.Data
+	if err := json.Unmarshal(rawData, &data); err != nil {
+		return cm.Err[getClusterInfoResult](clusterapi.ErrorOther(err.Error()))
+	}
+	callRs := cm.OK[getClusterInfoResult](data)
+	return callRs
 }
 
 func main() {}
+
+type getClusterInfoResult = cm.Result[clusterapi.DataShape, clusterapi.Data, clusterapi.Error]

@@ -2,5 +2,6 @@ go 1.23.0
 
 use (
 	./clusters
+	./component-sdk-go/_examples/invoke
 	./kv-kube-cfgmaps
 )

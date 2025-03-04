@@ -1,4 +1,5 @@
 gen/*
 build/*
 *.wasm
+wit/deps
 

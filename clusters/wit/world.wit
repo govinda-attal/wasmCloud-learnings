@@ -1,6 +1,12 @@
 package cloud-platform:clusters;
 
 interface cluster-api {
+
+  variant error {
+    cluster-not-found,
+
+    other(string)
+  }
   
   record data {
     tier: string,
@@ -9,10 +15,11 @@ interface cluster-api {
     cluster: string,
   }
 
-  get: func(tier: string, cluster: string) -> data;
+  get-cluster-info: func() ->  result<data, error>;
 }
 
 world clusters {
   export cluster-api;
   import wrpc:keyvalue/store@0.2.0-draft;
+  include wasmcloud:component-go/imports@0.1.0;
 }
