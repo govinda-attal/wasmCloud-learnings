@@ -11,7 +11,7 @@ spec:
     - name: kube-cfgmaps
       type: capability
       properties:
-        image: localhost:5000/kube-cfgmaps:v0.0.1
+        image: kind-registry:5000/kube-cfgmaps:v0.0.1
         id: kube-cfgmaps
         config:
           - name: provider-config
