@@ -5,9 +5,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 
 	"go.bytecodealliance.org/cm"
 	_ "go.bytecodealliance.org/x/cabi"
+
+	"go.wasmcloud.dev/component/log/wasilog"
 
 	clusterapi "github.com/govinda-attal/wasmCloud-learnings/clusters/gen/cloud-platform/clusters/cluster-api"
 	"github.com/govinda-attal/wasmCloud-learnings/clusters/gen/wrpc/keyvalue/store"
@@ -18,6 +21,9 @@ func init() {
 }
 
 func GetClusterInfo() getClusterInfoResult {
+	logger := slog.New(wasilog.DefaultOptions().NewHandler())
+	logger.Info("request received")
+
 	tier := "dev"
 	cluster := "cluster1"
 	bucket := fmt.Sprintf("default/%s-clusters", tier)

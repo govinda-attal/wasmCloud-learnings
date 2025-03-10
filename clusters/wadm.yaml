@@ -3,7 +3,7 @@ kind: Application
 metadata:
   name: clusters
   annotations:
-    version: v0.0.1
+    version: v0.0.2
     description: 'clusters application'
     wasmcloud.dev/authors: cloud-platform team
 spec:
@@ -11,7 +11,7 @@ spec:
     - name: kv-kube-cfgmaps
       type: capability
       properties:
-        image: localhost:5000/kube-cfgmaps:v0.0.1
+        image: kind-registry:5000/kube-cfgmaps:v0.0.15
         id: kv-kube-cfgmaps
         config:
           - name: provider-config
@@ -20,8 +20,8 @@ spec:
     - name: clusters-info
       type: component
       properties:
-        image: localhost:5000/clusters-info:v0.0.1
-        id: clusters-info
+        image: kind-registry:5000/clusters-info:v0.0.7
+        id:  clusters-info
       traits:
         - type: spreadscaler
           properties:

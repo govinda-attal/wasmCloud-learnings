@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"strings"
 
 	sdk "go.wasmcloud.dev/provider"
@@ -26,15 +27,17 @@ var _ store.Handler = (*Provider)(nil)
 
 func (p *Provider) Get(ctx context.Context, bucket string, key string) (*wrpc.Result[[]uint8, store.Error], error) {
 	namespace, cm := namespacedConfigMap(bucket)
+	log.Println("namespace", namespace, "cm", cm)
 	value, err := p.cmSrv.GetValue(ctx, namespace, cm, key)
 	if err != nil {
+		log.Println("error getting value", err)
 		if errors.IsNotFound(err) {
 			return nil, store.NewErrorNoSuchStore()
 		}
 		return nil, store.NewErrorOther(err.Error())
 	}
 	valBytes := []byte(value)
-
+	log.Println("value", value)
 	return &wrpc.Result[[]uint8, store.Error]{
 		Ok: &valBytes,
 	}, nil

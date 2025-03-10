@@ -3,6 +3,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -14,12 +15,31 @@ import (
 )
 
 func main() {
+
+	envs := os.Environ()
+	fmt.Println("len of envs", len(envs))
+	for _, env := range envs {
+		fmt.Println(env)
+	}
+
+	filepath := "/var/run/secrets/kubernetes.io/serviceaccount/token"
+	if _, err := os.Stat(filepath); err == nil {
+		fmt.Printf("File '%s' exists\n", filepath)
+	} else if os.IsNotExist(err) {
+		fmt.Printf("File '%s' does not exist\n", filepath)
+	} else {
+		fmt.Printf("Error checking file: %v\n", err)
+	}
+
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func run() error {
+	os.Setenv("KUBERNETES_SERVICE_HOST", "10.96.0.1")
+	os.Setenv("KUBERNETES_SERVICE_PORT", "443")
+	
 	cmSrv, err := cfgmap.NewService()
 	if err != nil {
 		panic(err)

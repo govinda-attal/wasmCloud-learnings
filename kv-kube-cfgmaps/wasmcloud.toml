@@ -1,8 +1,8 @@
 # NOTE: Not yet supported
 name = "KeyValue Kubernetes ConfigMaps"
-language = "go"
 type = "provider"
 version = "0.1.0"
+language = "go"
 
 [provider]
 vendor = "cloud-platform"

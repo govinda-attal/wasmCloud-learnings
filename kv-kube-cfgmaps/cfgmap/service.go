@@ -3,13 +3,14 @@ package cfgmap
 import (
 	"context"
 	"fmt"
+	"log"
 	"maps"
 	"slices"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	clientcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
-	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/rest"
 )
 
 type Service struct {
@@ -29,8 +30,10 @@ func NewService() (*Service, error) {
 
 func (s *Service) GetValue(ctx context.Context, namespace, name, key string) (string, error) {
 	var value string
+	log.Println("namespace", namespace, "name", name, "key", key)
 	cm, err := s.core.ConfigMaps(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
+		log.Println("error getting configmap", err)
 		return value, err
 	}
 
@@ -38,7 +41,7 @@ func (s *Service) GetValue(ctx context.Context, namespace, name, key string) (st
 	if !ok {
 		return value, fmt.Errorf("key not found")
 	}
-
+	log.Println("value", value)
 	return value, nil
 }
 
@@ -60,11 +63,15 @@ func (s *Service) Exists(ctx context.Context, namespace, name, key string) (bool
 }
 
 func kubeClient() (clientcorev1.CoreV1Interface, error) {
-	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
-	config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, nil).ClientConfig()
+	config, err := rest.InClusterConfig()
 	if err != nil {
 		return nil, err
 	}
+	//loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
+	//config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, nil).ClientConfig()
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	kubeClientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
