@@ -41,7 +41,6 @@ func (s *Service) GetValue(ctx context.Context, namespace, name, key string) (st
 	if !ok {
 		return value, fmt.Errorf("key not found")
 	}
-	log.Println("value", value)
 	return value, nil
 }
 

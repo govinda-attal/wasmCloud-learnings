@@ -37,10 +37,8 @@ func (p *Provider) Get(ctx context.Context, bucket string, key string) (*wrpc.Re
 		return nil, store.NewErrorOther(err.Error())
 	}
 	valBytes := []byte(value)
-	log.Println("value", value)
-	return &wrpc.Result[[]uint8, store.Error]{
-		Ok: &valBytes,
-	}, nil
+	log.Println("value", string(valBytes))
+	return Ok(valBytes), nil
 }
 
 func (p *Provider) Exists(ctx context.Context, bucket string, key string) (*wrpc.Result[bool, store.Error], error) {
@@ -52,10 +50,8 @@ func (p *Provider) Exists(ctx context.Context, bucket string, key string) (*wrpc
 		}
 		return nil, store.NewErrorOther(err.Error())
 	}
-
-	return &wrpc.Result[bool, store.Error]{
-		Ok: &exists,
-	}, nil
+	log.Println("exists", exists)
+	return Ok(exists), nil
 }
 
 func (p *Provider) ListKeys(ctx context.Context, bucket string, cursor *uint64) (*wrpc.Result[store.KeyResponse, store.Error], error) {
@@ -70,9 +66,8 @@ func (p *Provider) ListKeys(ctx context.Context, bucket string, cursor *uint64) 
 	keyRs := store.KeyResponse{
 		Keys: keys,
 	}
-	return &wrpc.Result[store.KeyResponse, store.Error]{
-		Ok: &keyRs,
-	}, nil
+	log.Println("keys", keys)
+	return Ok(keyRs), nil
 }
 
 func (*Provider) Set(ctx__ context.Context, bucket string, key string, value []uint8) (*wrpc.Result[struct{}, store.Error], error) {
@@ -100,4 +95,9 @@ func namespacedConfigMap(bucket string) (namespace, cm string) {
 		return "default", bucket
 	}
 	return parts[0], parts[1]
+}
+
+
+func Ok[T any](v T) *wrpc.Result[T, store.Error] {
+	return wrpc.Ok[store.Error](v)
 }

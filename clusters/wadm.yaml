@@ -11,16 +11,31 @@ spec:
     - name: kv-kube-cfgmaps
       type: capability
       properties:
-        image: kind-registry:5000/kube-cfgmaps:v0.0.15
+        image: kind-registry:5000/kube-cfgmaps:v0.0.16
         id: kv-kube-cfgmaps
         config:
           - name: provider-config
             properties:
               team: cloud-platform
+    - name: httpserver
+      type: capability
+      properties:
+        image: ghcr.io/wasmcloud/http-server:0.22.0
+      traits:
+        - type: link
+          properties:
+            target: clusters-info
+            namespace: wasi
+            package: http
+            interfaces: [incoming-handler]
+            source_config:
+              - name: default-http
+                properties:
+                  address: 0.0.0.0:8000
     - name: clusters-info
       type: component
       properties:
-        image: kind-registry:5000/clusters-info:v0.0.7
+        image: kind-registry:5000/clusters-info:v0.0.10
         id:  clusters-info
       traits:
         - type: spreadscaler
